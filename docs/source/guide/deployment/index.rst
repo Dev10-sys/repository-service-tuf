@@ -18,6 +18,7 @@ Deployment Guides
    guide/helm
    guide/docker
    guide/kubernetes
+   guide/updates
 
 Configuration and Setup
 #######################
