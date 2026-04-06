@@ -10,6 +10,11 @@ volumes:
 services:
   redis:
     image: redis:8.0.0-alpine3.21
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
     volumes:
       - rstuf-redis-data:/data
     healthcheck:
@@ -19,6 +24,12 @@ services:
 
   postgres:
     image: postgres:17.5-alpine3.21
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /var/run/postgresql
+      - /tmp
     ports:
       - "5433:5432"
     # DO NOT USE IT IN PRODUCTION. Check the Postgres best practices
@@ -32,6 +43,12 @@ services:
 
   rstuf-worker:
     image: ghcr.io/repository-service-tuf/repository-service-tuf-worker:latest
+    user: "1000:1000"
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
     volumes:
       - rstuf-storage:/var/opt/repository-service-tuf/storage
       - ./local-keyvault/:/var/opt/repository-service-tuf/keyvault/ # map the path where is your key
@@ -41,7 +58,7 @@ services:
       RSTUF_ONLINE_KEY_DIR: /var/opt/repository-service-tuf/keyvault
       RSTUF_BROKER_SERVER: redis://redis
       RSTUF_REDIS_SERVER: redis://redis
-      RSTUF_SQL_SERVER: postgresql://postgres:secret@postgres:5432
+      RSTUF_DB_SERVER: postgresql://postgres:secret@postgres:5432
 
     depends_on:
       - postgres
@@ -53,6 +70,12 @@ services:
 
   web-server:
     image: python:3.13-slim
+    user: "1000:1000"
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
     command: python -m http.server -d /www 8080
     volumes:
       - rstuf-storage:/www
@@ -61,6 +84,12 @@ services:
 
   rstuf-api:
     image: ghcr.io/repository-service-tuf/repository-service-tuf-api:latest
+    user: "1000:1000"
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
     volumes:
       - rstuf-api-data:/data
     ports:

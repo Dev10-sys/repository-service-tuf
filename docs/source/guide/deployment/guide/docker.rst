@@ -58,6 +58,7 @@ Steps
 
   The general explanation about this Docker Compose yaml file:
 
+   * It enforces security hardening by running containers as non-root users (``user: 1000:1000``), using ``read_only: true`` with specific ``tmpfs`` mounts, and applying ``security_opt: no-new-privileges:true`` to prevent privilege escalation.
    * It uses Docker Volume for the persistent data and Volumes
 
     - ``rstuf-storage``: public TUF Metadata. Using RSTUF Worker with
@@ -80,7 +81,7 @@ Steps
      - Online Key directory: ``RSTUF_ONLINE_KEY_DIR``
      - Broker Server: ``RSTUF_BROKER_SERVER``
      - Redis Server: ``RSTUF_REDIS_SERVER``
-     - SQL (Postgres) Server: ``RSTUF_SQL_SERVER``
+     - DB (Postgres) Server: ``RSTUF_DB_SERVER``
 
 3. Run using Docker stack
 

@@ -8,6 +8,12 @@ volumes:
 services:
   postgres:
     image: postgres:17.5-alpine3.21
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /var/run/postgresql
+      - /tmp
     ports:
       - "5433:5432"
     environment:
@@ -20,6 +26,12 @@ services:
 
   repository-service-tuf-api:
     build: ./repository-service-tuf-api
+    user: "1000:1000"
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
     volumes:
       - repository-service-tuf-api-data:/data
     ports:
@@ -33,6 +45,12 @@ services:
 
   web:
     image: python:3.13-slim
+    user: "1000:1000"
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
     command: python -m http.server -d /var/opt/repository-service-tuf/storage 8080
     volumes:
       - repository-service-tuf-storage:/var/opt/repository-service-tuf/storage
@@ -41,6 +59,11 @@ services:
 
   redis:
     image: redis:8.0.0-alpine3.21
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
     volumes:
       - repository-service-tuf-redis-data:/data
     ports:
@@ -51,6 +74,12 @@ services:
 
   repository-service-tuf-worker:
     build: ./repository-service-tuf-worker
+    user: "1000:1000"
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
     environment:
       - RSTUF_STORAGE_BACKEND=LocalStorage
       - RSTUF_LOCAL_STORAGE_BACKEND_PATH=/var/opt/repository-service-tuf/storage
@@ -71,6 +100,12 @@ services:
 
   rstuf-ft-runner:
     image: python:3.13-slim
+    user: "1000:1000"
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
     command: python -V
     working_dir: /rstuf-runner
     volumes:
