@@ -1,0 +1,19 @@
+name: OSPS Baseline Check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  osps-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run OSPS Baseline Scan
+        uses: ossf/scorecard-action@v2
+        with:
+          results_file: results.sarif
